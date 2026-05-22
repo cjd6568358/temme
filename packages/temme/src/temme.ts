@@ -124,10 +124,11 @@ export default function temme(
           capture(result, subCheerio.first(), selector)
         }
         if (selector.arrayCapture) {
-          result.add(
-            selector.arrayCapture,
-            subCheerio.toArray().map(sub => helper($(sub), selector.children).getResult()),
-          )
+          const capturedResults: any[] = []
+          subCheerio.each((_, elem) => {
+            capturedResults.push(helper($(elem), selector.children).getResult())
+          })
+          result.add(selector.arrayCapture, capturedResults)
         }
       } else if (selector.type === 'parent-ref-selector') {
         const cssSelector = makeNormalCssSelector([selector.section])
