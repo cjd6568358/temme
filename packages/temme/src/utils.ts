@@ -65,3 +65,22 @@ export function isCapture(x: any): x is Capture {
 export function last<T>(arr: T[]): T {
   return arr[arr.length - 1]
 }
+
+
+/** 预处理 HTML：移除 script/style/comment 块，减少工作量。
+ *  这些内容不影响 temme 选择器的匹配结果。 */
+export function htmlShaking(html: string): string {
+  return (
+    html
+      .replace(/<svg[^>]*>[\s\S]*?<\/svg>/gi, "")
+      .replace(/<!DOCTYPE[^>]*>/gi, "")
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .replace(/&amp;/g, "&")
+      .replace(/&apos;/g, "'")
+      .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+      .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+      .replace(/ (alt|checked|disabled|selected|readonly|multiple|nowrap|noshade|noresize|declare|defer|ismap)=""/g, ' $1')
+  );
+}

@@ -1,4 +1,3 @@
-import cheerio from 'cheerio'
 import invariant from 'invariant'
 import { Capture, Dict, Literal } from './interfaces'
 import { CaptureResult } from './CaptureResult'
@@ -6,19 +5,19 @@ import { isCapture } from './utils'
 import { ASSIGN_PROCEDURE_NAME, DEFAULT_PROCEDURE_NAME } from './constants'
 
 export interface ProcedureFn {
-  (result: CaptureResult, node: Cheerio, ...args: any[]): void
+  (result: CaptureResult, node: any, ...args: any[]): void
 }
 
-function text(result: CaptureResult, node: Cheerio, capture: Capture) {
+function text(result: CaptureResult, node: any, capture: Capture) {
   result.add(capture, node.text())
 }
 
-function html(result: CaptureResult, node: Cheerio, capture: Capture) {
+function html(result: CaptureResult, node: any, capture: Capture) {
   result.add(capture, node.html())
 }
 
-function node(result: CaptureResult, node: Cheerio, capture: Capture) {
-  result.add(capture, cheerio(node))
+function node(result: CaptureResult, node: any, capture: Capture) {
+  result.add(capture, node)
 }
 
 /** Try to capture text within a node's text.
@@ -27,7 +26,7 @@ function node(result: CaptureResult, node: Cheerio, capture: Capture) {
  * 2. find($capture, 'after-string')    Try to capture the text before 'after-string'
  * 3. find('pre', $capture, 'post')     Try to capture the text between 'pre' and 'post'
  * */
-function find(result: CaptureResult, node: Cheerio, ...args: (string | Capture)[]) {
+function find(result: CaptureResult, node: any, ...args: (string | Capture)[]) {
   const invalidArgs = 'Invalid arguments received by match(...)'
   const s = node.text()
   if (args.length === 2) {
@@ -71,7 +70,7 @@ function find(result: CaptureResult, node: Cheerio, ...args: (string | Capture)[
   }
 }
 
-function assign(result: CaptureResult, node: Cheerio, capture: Capture, value: Literal) {
+function assign(result: CaptureResult, node: any, capture: Capture, value: Literal) {
   result.forceAdd(capture, value)
 }
 

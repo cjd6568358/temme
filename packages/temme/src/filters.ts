@@ -12,18 +12,20 @@ export const defaultFilterDict: Dict<FilterFn> = {
     return this.filter(Boolean)
   },
   flatten(this: any[][]) {
-    return this.reduce((r, a) => r.concat(a))
+    return Array.prototype.flat.call(this)
   },
   first(this: any[]) {
-    return this[0]
+    return Array.prototype.at.call(this, 0)
   },
   last(this: any[]) {
-    return this[this.length - 1]
+    return Array.prototype.at.call(this, -1)
   },
   get(this: any, key: any) {
     return this[key]
   },
-
+  at(this: any[], index: number) {
+    return Array.prototype.at.call(this, index)
+  },
   Number() {
     return Number(this)
   },
