@@ -1,3 +1,16 @@
+# 重要提示
+
+fork自https://github.com/feichao93/temme
+
+## 主要更新
+
+| 特性 | 说明 |
+|------|------|
+| **高性能 HTML 解析** | 浏览器环境支持 `cheerioOptions` 切换至 `htmlparser2`；Node 环境新增 `lexbor` 加载器（纯 C 实现，性能更高，API 兼容 cheerio） |
+| **HTML 预处理** | 新增 `htmlShaking` 工具函数，自动移除 script/style/comment 块，减少解析工作量 |
+| **增强的过滤器** | 新增 `at` 过滤器，更便捷地提取数组元素 |
+| **扩展赋值语法** | 支持变量引用和变量+过滤器链式赋值（如 `$foo = $bar\|split(',')\|first`） |
+
 [![Build Status](https://img.shields.io/travis/shinima/temme/master.svg?style=flat-square)](https://travis-ci.org/shinima/temme) [![Coverage Status](https://img.shields.io/coveralls/shinima/temme/master.svg?style=flat-square)](https://coveralls.io/github/shinima/temme?branch=master) [![NPM Package](https://img.shields.io/npm/v/temme.svg?style=flat-square)](https://www.npmjs.org/package/temme) ![Node Version Requirement](https://img.shields.io/badge/node-%3E=6-f37c43.svg?style=flat-square) [![VSCode Extension](https://img.shields.io/badge/vscode-插件-green.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=shinima.vscode-temme) [![Example Fangwen](https://img.shields.io/badge/例子-芳文社-2196F3.svg?style=flat-square)](https://zhuanlan.zhihu.com/p/36036616) [![Example Douban Movie](https://img.shields.io/badge/例子-豆瓣电影-2196F3.svg?style=flat-square)](/examples/douban-movie/readme.md)
 
 <a href="readme-en.md">English Version</a>
