@@ -183,8 +183,19 @@ JSFunctionArgsString
   = $((![()] SourceCharacter)+ / '(' JSFunctionArgsString ')')*
 
 Assignment
-  = capture:ValueCapture __ '=' __ value:Literal {
+  = capture:ValueCapture __ '=' __ value:AssignmentValue {
     return { capture, value }
+  }
+
+AssignmentValue
+  = capture:ValueCapture {
+    return capture
+  }
+  / literal:Literal filterList:Filter* {
+    if (filterList.length > 0) {
+      return { name: DEFAULT_CAPTURE_KEY, filterList, modifier: null, _literal: literal }
+    }
+    return literal
   }
 
 Separator = ';'

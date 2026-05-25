@@ -66,7 +66,7 @@ export interface Procedure {
 export interface Assignment {
   type: 'assignment'
   capture: Capture
-  value: Literal
+  value: Literal | Capture
 }
 
 export interface SnippetDefine {

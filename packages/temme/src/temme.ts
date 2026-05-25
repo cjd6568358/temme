@@ -84,8 +84,8 @@ export default function temme(
 
   return helper($.root(), rootSelectorArray).getResult()
 
-  function helper(cntCheerio: any, selectorArray: TemmeSelector[]): CaptureResult {
-    const result = new CaptureResult(filterDict, modifierDict)
+  function helper(cntCheerio: any, selectorArray: TemmeSelector[], parentResult?: CaptureResult): CaptureResult {
+    const result = new CaptureResult(filterDict, modifierDict, parentResult)
 
     // First pass: process SnippetDefine / FilterDefine / ModifierDefine / ProcedureDefine
     for (const selector of selectorArray) {
@@ -126,7 +126,7 @@ export default function temme(
         if (selector.arrayCapture) {
           const capturedResults: any[] = []
           subCheerio.each((_, elem) => {
-            capturedResults.push(helper($(elem), selector.children).getResult())
+            capturedResults.push(helper($(elem), selector.children, result).getResult())
           })
           result.add(selector.arrayCapture, capturedResults)
         }
@@ -136,7 +136,18 @@ export default function temme(
           capture(result, cntCheerio, selector)
         }
       } else if (selector.type === 'assignment') {
-        result.forceAdd(selector.capture, selector.value)
+        if (isCapture(selector.value)) {
+          if ('_literal' in selector.value) {
+            const resolvedValue = result.applyFilterList(selector.value._literal, selector.value.filterList)
+            result.forceAdd(selector.capture, resolvedValue)
+          } else {
+            const sourceValue = result.get(selector.value.name)
+            const resolvedValue = result.applyFilterList(sourceValue, selector.value.filterList)
+            result.forceAdd(selector.capture, resolvedValue)
+          }
+        } else {
+          result.forceAdd(selector.capture, selector.value)
+        }
       } // else selector.type is 'xxx-define'. Do nothing.
     }
     return result

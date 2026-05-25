@@ -70,8 +70,19 @@ function find(result: CaptureResult, node: any, ...args: (string | Capture)[]) {
   }
 }
 
-function assign(result: CaptureResult, node: any, capture: Capture, value: Literal) {
-  result.forceAdd(capture, value)
+function assign(result: CaptureResult, node: any, capture: Capture, value: Literal | Capture) {
+  if (isCapture(value)) {
+    if ('_literal' in value) {
+      const resolvedValue = result.applyFilterList(value._literal, value.filterList)
+      result.forceAdd(capture, resolvedValue)
+    } else {
+      const sourceValue = result.get(value.name)
+      const resolvedValue = result.applyFilterList(sourceValue, value.filterList)
+      result.forceAdd(capture, resolvedValue)
+    }
+  } else {
+    result.forceAdd(capture, value)
+  }
 }
 
 export const defaultProcedureDict: Dict<ProcedureFn> = {

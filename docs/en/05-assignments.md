@@ -2,15 +2,25 @@
 
 ### Syntax
 
-- `$foo = bar;` foo should be a valid JavaScript identifier; bar should be a JavaScript literal (string/number/null/boolean/RegExp).
+Assignment statements use a variable on the left-hand side and support the following forms on the right-hand side:
 
-### Running Semantics
+| Form | Example | Description |
+|------|---------|-------------|
+| Literal | `$foo = 123;` | Supports `string`, `number`, `null`, `boolean`, `RegExp` |
+| Literal + filter | `$foo = "123"|Number;` | Apply filters to a literal before assignment |
+| Variable reference | `$foo = $bar;` | Assign the value of one variable to another |
+| Variable reference + filter | `$foo = $bar|first;` | Apply filters to a variable value before assignment; supports chained filters like `$bar|split(",")|first` |
 
-The running semantics differs when assignments appear in different places:
+> **Note:** when referencing another variable, the source variable must have been captured or assigned earlier. Selectors execute from top to bottom, left to right.
 
-- At top level: `$foo = 'bar';` means that string `'bar'` will be in `.foo` of the final result;
-- In content-capture: `div.foo{ $a = null }` is like a conditional capture: if there is such a div that satisfies `.foo` qualifier, then the assignment is executed;
-- In children selector, `li@list { $x = 123; }` means that every object in `list` will have `123` as the `.x` field.
+### Running semantics
+
+The meaning of an assignment depends on its context:
+
+- At the top level, `$foo = 'bar';` places the string `bar` into the final result under `foo`.
+- Inside braces, `div.foo{ $a = null }` behaves like a conditional assignment: if an element matches the selector `div.foo`, the assignment is executed.
+- In a child selector for array matching, `li@list { $x = 123; }` means each element in the matched `list` array receives `123` for its `x` field.
+- Child selectors can access variables from the parent scope, so a child selector can reference variables captured by its parent.
 
 ### Examples
 
@@ -38,7 +48,7 @@ div { $hasDivElement = true };
 li@array {
   $row = true;
   $isPurple = false;
-  [data-color=purple]{$isPurple = true};
+  [data-color=purple]{ $isPurple = true };
 };`)
 //=>
 // {
@@ -51,3 +61,25 @@ li@array {
 //   ]
 // }
 ```
+
+#### Literal + filter
+
+```JavaScript
+temme(html, `
+li@array {
+  $id = "001"|Number;
+};`)
+//=> { "array": [{ "id": 1 }, { "id": 1 }, { "id": 1 }] }
+```
+
+#### Variable reference + filter
+
+```JavaScript
+temme(html, `
+$title = 'hello world';
+li@array {
+  $firstWord = $title|split(' ')|first;
+};`)
+//=> { "title": "hello world", "array": [{ "firstWord": "hello" }, ...] }
+```
+
