@@ -83,6 +83,9 @@ export class CaptureResult {
       return initValue;
     }
 
+    if (initValue == null) {
+      return initValue;
+    }
     let value = initValue;
     for (let i = 0; i < filterList.length; i++) {
       const filter = filterList[i];
